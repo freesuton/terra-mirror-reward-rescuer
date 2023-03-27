@@ -1,13 +1,12 @@
-import fetch from 'isomorphic-fetch';
 import { MsgExecuteContract,Coins, LCDClient,Fee, MnemonicKey } from '@terra-money/terra.js';
-
-const MIR_STAKING_CONTRACT = 'terra17f7zu97865jmknk7p2glqvxzhduk78772ezac5';
 
 // mnemonic key
 const MK = '';
 
 // transaction fee  in Luna  (500000 Luna = 0.5 Luna)
 const txFee = 50032500;
+
+const MIR_STAKING_CONTRACT = 'terra17f7zu97865jmknk7p2glqvxzhduk78772ezac5';
 
 const executeMsg = {
     withdraw: {}
