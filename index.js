@@ -1,42 +1,49 @@
-import { MsgExecuteContract,Coins, LCDClient,Fee, MnemonicKey } from '@terra-money/terra.js';
+import { MsgExecuteContract, Coins, LCDClient, Fee, MnemonicKey } from '@terra-money/terra.js';
+import 'dotenv/config'
 
-// mnemonic key
-const MK = '';
+// Your mnemonic key (ensure it's securely stored and never exposed!)
+const MK = process.env.MK;
 
-// transaction fee  in Luna  (500000 Luna = 0.5 Luna)
+// Transaction fee in Luna (500000 Luna = 0.5 Luna)
 const txFee = 50032500;
-
-const MIR_STAKING_CONTRACT = 'terra17f7zu97865jmknk7p2glqvxzhduk78772ezac5';
+const MIR_STAKING_CONTRACT = process.env.MIR_STAKING_CONTRACT;
 
 const executeMsg = {
-    withdraw: {}
+    withdraw: {}  // Ensure this message matches the expected format for the contract
 }
 
 const lcd = new LCDClient({
-    URL: 'https://terra-classic-lcd.publicnode.com',
+    URL: process.env.RPC,
     chainID: 'columbus-5',
-    isClassic: true  // *set to true to connect terra-classic chain*
+    isClassic: true
 });
 
 const fee = new Fee(250000, { uluna: txFee });
 
-// create a key out of a mnemonic
 const mk = new MnemonicKey({
     mnemonic: MK
 });
 
 const wallet = lcd.wallet(mk);
+
 const execute = new MsgExecuteContract(
-    wallet.key.accAddress, // sender
-    MIR_STAKING_CONTRACT, // contract account address
-    executeMsg // handle msg
+    wallet.key.accAddress, 
+    MIR_STAKING_CONTRACT, 
+    executeMsg
 );
 
-const tx = await wallet.createAndSignTx({
-    msgs: [execute],
-    fee
-})
-const result = await lcd.tx.broadcast(tx);
+async function sendTx() {
+    try {
+        const tx = await wallet.createAndSignTx({
+            msgs: [execute],
+            fee
+        });
+        const result = await lcd.tx.broadcast(tx);
+        console.log(result);
+    } catch (error) {
+        console.error("Error sending transaction:", error);
+    }
+}
 
-console.log(result);
-
+// sendTx();
+console.log(MK);
